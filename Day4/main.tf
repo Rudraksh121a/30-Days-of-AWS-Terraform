@@ -1,36 +1,30 @@
 terraform {
+    backend "s3" {
+      bucket = "my-terraform-state-rudraksh-123456"
+      key    = "dev/terraform.tfstate"
+      region = "us-east-1"
+      encrypt = true
+      use_lockfile = true
+    }
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.0"
+      source = "hashicorp/aws"
+      version = "6.23.0"
     }
   }
 }
 
 provider "aws" {
+  
   region = "us-east-1"
+
 }
 
-resource "aws_s3_bucket" "tf_state" {
-  bucket = "myDevBucket" 
-}
+resource "aws_s3_bucket" "my_first_bucket" {
+  bucket = "my-first-terraform-bucket-rudrakshk-123456"
 
-resource "aws_s3_bucket_versioning" "tf_state" {
-  bucket = aws_s3_bucket.tf_state.id
-  versioning_configuration {
-    status = "Enabled"
+  tags = {
+    Name        = "My first terraform bucket"
+    Environment = "Dev"
   }
 }
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "tf_state" {
-  bucket = aws_s3_bucket.tf_state.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
-}
-
-
-
